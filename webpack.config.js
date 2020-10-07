@@ -24,11 +24,13 @@ module.exports = env => {
       filename: '[name].[hash:8].js',
       path: path.resolve(__dirname, 'dist'),
     },
+    resolve: {
+      extensions: ['.js', '.jsx', '.css'],
+    },
     module: {
       rules: [
         {
-          test: /\.css$/i,
-          include: /src/,
+          test: /\.(css|scss)$/i,
           // use: ['style-loader', 'css-loader'],
           use: [{
             loader: MiniCssExtractPlugin.loader,
@@ -42,6 +44,7 @@ module.exports = env => {
         },
         {
           test: /\.jsx?$/,
+          exclude: /node_modules/,
           use: ['babel-loader']
         }
       ]

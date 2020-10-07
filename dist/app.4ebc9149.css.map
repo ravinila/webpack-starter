@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack:///src/style.css"],"names":[],"mappings":"AAAA;EACE,eAAe;EACf,gBAAgB;EAChB,gBAAgB;AAClB,C","file":"app.4ebc9149.css","sourcesContent":["body {\n  font-size: 2rem;\n  color: chocolate;\n  font-weight: 600;\n}"],"sourceRoot":""}
