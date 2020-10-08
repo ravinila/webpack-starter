@@ -5,7 +5,9 @@ import Counter from './components/Counter';
 import './style.css';
 
 const App = () => {
+  console.log(`build version: ${process.ENV.BUILD_VERSION}`);
   console.log('<App /> component rendered');
+
   return (
     <div className="layout">
       <div>

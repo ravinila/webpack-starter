@@ -1,21 +1,27 @@
 const path = require('path');
 const webpack = require('webpack');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+const TerserPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+const pkgJson = require('./package.json');
+
 // const env = process.env.NODE_ENV;
 // console.log('env', env);
 
 module.exports = env => {  
   console.log('environment', env);
-  const DEBUG = env.mode !== 'production';
+  const IS_DEBUG_MODE = env.mode !== 'production';
 
   return {
     mode: env.mode,
     devtool: 'source-map',
     devServer: {
       contentBase: path.resolve(__dirname, 'public'),
-      port: 9000,
+      port: 9009,
       historyApiFallback: true,
       hot: true,
     },
@@ -29,6 +35,8 @@ module.exports = env => {
     resolve: {
       extensions: ['.js', '.jsx', '.css'],
       alias: {
+        // if there is a duplicate in any plugins alias makes webpack
+        // to load only one instance and avoids duplicates
         // lodash: path.resolve(__dirname, './node_modules/lodash'),
         // moment: path.resolve(__dirname, './node_modules/moment/moment.js'),
       }
@@ -36,17 +44,17 @@ module.exports = env => {
     module: {
       rules: [
         {
-          test: /\.css$/i,
+          test: /\.s?css$/i,
           // use: ['style-loader', 'css-loader'],
           use: [{
             loader: MiniCssExtractPlugin.loader,
             options: {
               // publicPath: '../',
-              hmr: env.mode === 'development',
+              hmr: IS_DEBUG_MODE,
               reloadAll: true,
             },
 
-          }, 'css-loader'],
+          }, 'css-loader', 'postcss-loader', 'sass-loader'],
         },
         {
           test: /\.jsx?$/,
@@ -56,12 +64,36 @@ module.exports = env => {
       ]
     },
     optimization: {
+      minimize: true,
+      minimizer: [
+        // It's used to minify bundled js files
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: false,
+          terserOptions: {
+            // https://github.com/webpack-contrib/terser-webpack-plugin#terseroptions
+          }
+        }),
+        // It's used to minify bundled css files
+        new OptimizeCSSAssetsPlugin({
+          cssProcessorPluginOptions: {
+            preset: ['default', { discardComments: { removeAll: true } }],
+          },
+        }),
+      ],
       splitChunks: {
         chunks: 'all',
         name: 'vendors',
       }
     },
     plugins: [
+      new webpack.DefinePlugin({
+        'process.ENV': {
+          BUILD_VERSION: JSON.stringify(pkgJson.version),
+        },
+      }),
+      
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
