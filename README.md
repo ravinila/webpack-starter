@@ -1,6 +1,8 @@
 # webpack-starter
 
-npm install (one time)
+The basic webpack setup to start your react application.
+
+`npm install` (one time)
 
 ## For Development
 `npm start`
