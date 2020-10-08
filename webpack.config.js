@@ -33,7 +33,7 @@ module.exports = env => {
       path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
-      extensions: ['.js', '.jsx', '.css'],
+      extensions: ['.js', '.jsx', '.css', '.scss'],
       alias: {
         // if there is a duplicate in any plugins alias makes webpack
         // to load only one instance and avoids duplicates
@@ -54,7 +54,7 @@ module.exports = env => {
               reloadAll: true,
             },
 
-          }, 'css-loader', 'postcss-loader', 'sass-loader'],
+          }, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.jsx?$/,
@@ -85,6 +85,15 @@ module.exports = env => {
       splitChunks: {
         chunks: 'all',
         name: 'vendors',
+        cacheGroups: {
+          // It separates node_modules files & app files,
+          // and creates different bundle files for caching purpose
+          common: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          },
+        },
       }
     },
     plugins: [
@@ -98,9 +107,10 @@ module.exports = env => {
         analyzerMode: 'static',
         openAnalyzer: false,
       }),
+
       new MiniCssExtractPlugin({
-        filename: '[name].[hash:8].css',
-        chunkFilename: '[id].css',
+        filename: '[name].[hash:8].css', // app.35849831.css
+        chunkFilename: '[id].[hash:8].css', // 1.35849831.css
       }),
       
       // It's used to remove unwanted files (Ex. moment locale files) from bundle

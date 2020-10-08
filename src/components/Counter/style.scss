@@ -4,13 +4,15 @@
   align-items: center;
 }
 
-output span {
-  display: inline-block;
-  padding: 5px;
-  text-align: center;
-  width: 40px;
-  border: 1px solid lightcoral;
-  margin-left: -1px;
+output {
+  span {
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+    width: 40px;
+    border: 1px solid lightcoral;
+    margin-left: -1px;
+  }
 }
 
 .btn {
