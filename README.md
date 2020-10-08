@@ -6,4 +6,4 @@ npm install (one time)
 `npm start`
 
 ## For Production build
-`npm build`
+`npm run build`
