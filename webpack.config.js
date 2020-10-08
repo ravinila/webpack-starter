@@ -29,7 +29,7 @@ module.exports = env => {
       app: './src/index.jsx'
     },
     output: {
-      filename: '[name].[hash:8].js',
+      filename: '[name].[contenthash:8].js',
       path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
@@ -109,8 +109,8 @@ module.exports = env => {
       }),
 
       new MiniCssExtractPlugin({
-        filename: '[name].[hash:8].css', // app.35849831.css
-        chunkFilename: '[id].[hash:8].css', // 1.35849831.css
+        filename: '[name].[contenthash:8].css', // app.a71bc45b.css
+        chunkFilename: '[name].[contenthash:8].css', // vendors.a71bc45b.css
       }),
       
       // It's used to remove unwanted files (Ex. moment locale files) from bundle
@@ -124,6 +124,9 @@ module.exports = env => {
         filename: 'index.html',
         minify: false,
       }),
+
+      // It's used for maintaining cache of each bundled files
+      new webpack.HashedModuleIdsPlugin(),
     ]
   }
 }

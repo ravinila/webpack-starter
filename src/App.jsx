@@ -5,7 +5,11 @@ import Counter from './components/Counter';
 import './style.css';
 
 const App = () => {
-  console.log(`build version: ${process.ENV.BUILD_VERSION}`);
+  console.log(
+    // this environment BUILD_VERSION variable is set
+    // using "webpack.DefinePlugin" plugin in webpack config
+    `build version: ${process.ENV.BUILD_VERSION}`
+  );
   console.log('<App /> component rendered');
 
   return (
