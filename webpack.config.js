@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -29,7 +30,7 @@ module.exports = env => {
       app: './src/index.jsx'
     },
     output: {
-      filename: '[name].[contenthash:8].js',
+      filename: IS_DEBUG_MODE ? '[name].js' : '[name].[contenthash:8].js',
       path: path.resolve(__dirname, 'dist'),
     },
     resolve: {
@@ -85,29 +86,24 @@ module.exports = env => {
       splitChunks: {
         chunks: 'all',
         name: 'vendors',
-        cacheGroups: {
-          // It separates node_modules files & app files,
-          // and creates different bundle files for caching purpose
-          common: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            chunks: 'all',
-          },
-        },
       }
     },
     plugins: [
+      
+      // It's to create global constants which can be configured at compile time
       new webpack.DefinePlugin({
         'process.ENV': {
           BUILD_VERSION: JSON.stringify(pkgJson.version),
         },
       }),
-      
+
+      // It's used to show bundle statistics/analysis after build
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
         openAnalyzer: false,
       }),
 
+      // It's used to extract css to separate files
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash:8].css', // app.a71bc45b.css
         chunkFilename: '[name].[contenthash:8].css', // vendors.a71bc45b.css
@@ -118,7 +114,10 @@ module.exports = env => {
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/,
       }),
-      
+
+      // It's is to remove/clean your build folder(s).
+      new CleanWebpackPlugin(),
+
       new HtmlWebpackPlugin({
         template: './src/template.html',
         filename: 'index.html',
