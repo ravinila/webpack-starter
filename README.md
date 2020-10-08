@@ -1,4 +1,6 @@
-# webpack-starter
+# webpack-starter :+1:
+
+
 
 The basic webpack setup to start your react application.
 
